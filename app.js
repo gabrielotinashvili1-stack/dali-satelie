@@ -109,7 +109,7 @@ function loadStock() {
       const savedProducts = JSON.parse(stored);
       return INITIAL_PRODUCTS.map((product) => {
         const savedProduct = savedProducts.find((saved) => saved.id === product.id);
-        return savedProduct ? { ...product, sizes: savedProduct.sizes } : product;
+        return savedProduct ? { ...product, sizes: savedProduct.sizes || product.sizes } : product;
       });
     }
   } catch (e) {
@@ -501,21 +501,28 @@ function renderOrdersHistory() {
     return;
   }
 
-  ordersHistoryList.innerHTML = orders.map((o) => `
-    <div class="order-history-card">
-      <div class="order-history-top">
-        <strong>${o.id} · ${o.productName}</strong>
-        <span class="order-history-time">${o.date}</span>
+  ordersHistoryList.innerHTML = orders.map((o) => {
+    const productId = o.code?.slice(0, 2);
+    const product = products.find((item) => item.id === productId);
+    const productName = product?.name || o.productName;
+    const color = product?.color || o.color;
+
+    return `
+      <div class="order-history-card">
+        <div class="order-history-top">
+          <strong>${o.id} · ${productName}</strong>
+          <span class="order-history-time">${o.date}</span>
+        </div>
+        <div>ფერი: <strong>${color}</strong> · ზომა: <strong>${o.size}</strong> · რაოდენობა: <strong>${o.quantity}</strong></div>
+        <div>ჯამი: <strong>${o.total}</strong></div>
+        <div style="margin-top: 6px; padding-top: 6px; border-top: 1px dotted var(--line);">
+          მყიდველი: <strong>${o.customer.name}</strong> (${o.customer.phone})<br>
+          მიტანის მისამართი: ${o.customer.address}
+          ${o.customer.notes ? `<br>შენიშვნა: <em>${o.customer.notes}</em>` : ""}
+        </div>
       </div>
-      <div>ფერი: <strong>${o.color}</strong> · ზომა: <strong>${o.size}</strong> · რაოდენობა: <strong>${o.quantity}</strong></div>
-      <div>ჯამი: <strong>${o.total}</strong></div>
-      <div style="margin-top: 6px; padding-top: 6px; border-top: 1px dotted var(--line);">
-        მყიდველი: <strong>${o.customer.name}</strong> (${o.customer.phone})<br>
-        მიტანის მისამართი: ${o.customer.address}
-        ${o.customer.notes ? `<br>შენიშვნა: <em>${o.customer.notes}</em>` : ""}
-      </div>
-    </div>
-  `).join("");
+    `;
+  }).join("");
 }
 
 ordersModalClose.addEventListener("click", closeOrdersModal);
