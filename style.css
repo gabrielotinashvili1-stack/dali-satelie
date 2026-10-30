@@ -7,12 +7,13 @@
   --line: #ded9d1;
   --green: #164b40;
   --green-deep: #103c33;
-  --serif: "Italiana", Georgia, serif;
-  --sans: "DM Sans", Arial, sans-serif;
+  --serif: "Noto Serif Georgian", Georgia, serif;
+  --sans: "Noto Sans Georgian", Arial, sans-serif;
   --page: 1440px;
 }
 
 * { box-sizing: border-box; }
+html[lang="ka"] * { letter-spacing: normal; }
 html { scroll-behavior: smooth; scroll-padding-top: 84px; }
 body {
   margin: 0;
