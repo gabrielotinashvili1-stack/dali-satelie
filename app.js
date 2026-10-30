@@ -2,98 +2,98 @@
 const INITIAL_PRODUCTS = [
   {
     id: "01",
-    code: "01 · FOREST",
-    name: "The Studio Set",
-    color: "Deep green",
+    code: "01 · ტყისფერი",
+    name: "სპორტული კომპლექტი",
+    color: "მუქი მწვანე",
     price: 180,
     currency: "₾",
     category: "sets",
     image: "122.jpg",
-    note: "An original in a rich, grounded color.",
+    note: "გამორჩეული მოდელი ღრმა, ბუნებრივ ფერში.",
     sizes: { "S": 1, "M": 2, "L": 1 }
   },
   {
     id: "02",
-    code: "02 · POPPY",
-    name: "The Studio Set",
-    color: "Vivid red",
+    code: "02 · ყაყაჩოსფერი",
+    name: "სპორტული კომპლექტი",
+    color: "კაშკაშა წითელი",
     price: 180,
     currency: "₾",
     category: "sets",
     image: "123.jpg",
-    note: "For days that call for a little more.",
+    note: "მათთვის, ვისაც მეტი ფერი სურს.",
     sizes: { "S": 1, "M": 1, "L": 1 }
   },
   {
     id: "03",
-    code: "03 · SAFFRON",
-    name: "The Studio Set",
-    color: "Golden yellow",
+    code: "03 · ზაფრანისფერი",
+    name: "სპორტული კომპლექტი",
+    color: "ოქროსფერი ყვითელი",
     price: 180,
     currency: "₾",
     category: "sets",
     image: "124.jpg",
-    note: "A warm note in the everyday.",
+    note: "თბილი ფერი ყოველდღიურობისთვის.",
     sizes: { "S": 1, "M": 1, "L": 0 }
   },
   {
     id: "04",
-    code: "04 · CORAL",
-    name: "The Easy Layer",
-    color: "Soft coral",
+    code: "04 · მარჯნისფერი",
+    name: "მსუბუქი მოსაცმელი",
+    color: "რბილი მარჯნისფერი",
     price: 150,
     currency: "₾",
     category: "layers",
     image: "484143695_624901107091541_145030727631404623_n.jpg",
-    note: "A bright layer with an easy shape.",
+    note: "კაშკაშა ფერი და თავისუფალი ფორმა.",
     sizes: { "XS": 1, "S": 2, "M": 2 }
   },
   {
     id: "05",
-    code: "05 · PINE",
-    name: "The Everyday Hoodie",
-    color: "Deep green",
+    code: "05 · ფიჭვისფერი",
+    name: "ყოველდღიური ჰუდი",
+    color: "მუქი მწვანე",
     price: 120,
     currency: "₾",
     category: "hoodies",
     image: "pp.jpg",
-    note: "A familiar favorite, in forest green.",
+    note: "საყვარელი მოდელი ტყისფერ მწვანეში.",
     sizes: { "S": 2, "M": 2, "L": 2 }
   },
   {
     id: "06",
-    code: "06 · RED",
-    name: "The Everyday Hoodie",
-    color: "Bright red",
+    code: "06 · წითელი",
+    name: "ყოველდღიური ჰუდი",
+    color: "კაშკაშა წითელი",
     price: 120,
     currency: "₾",
     category: "hoodies",
     image: "kk.jpg",
-    note: "A pop of color, made for everyday.",
+    note: "ფერის თამამი აქცენტი ყოველდღიურობისთვის.",
     sizes: { "S": 0, "M": 1, "L": 0 }
   },
   {
     id: "07",
-    code: "07 · STONE",
-    name: "The Everyday Hoodie",
-    color: "Warm taupe",
+    code: "07 · ქვისფერი",
+    name: "ყოველდღიური ჰუდი",
+    color: "თბილი ტაუპისფერი",
     price: 120,
     currency: "₾",
     category: "hoodies",
     image: "aa.jpg",
-    note: "An understated shade with character.",
+    note: "თავშეკავებული ფერი, გამორჩეული ხასიათით.",
     sizes: { "S": 1, "M": 2, "L": 1 }
   },
   {
     id: "08",
-    code: "08 · STONE SET",
-    name: "The Everyday Tracksuit",
-    color: "Warm taupe",
+    code: "08 · ქვისფერი კომპლექტი",
+    name: "სპორტული კოსტიუმი",
+    color: "თბილი ტაუპისფერი",
     price: 120,
     currency: "₾",
     category: "hoodies",
     image: "AS.jpg",
-    note: "A matching hoodie and sweatpants set.",
+    note: "ჰუდისა და სპორტული შარვლის კომპლექტი.",
     sizes: { "S": 1, "M": 1, "L": 1 }
   }
 ];
@@ -107,12 +107,10 @@ function loadStock() {
     const stored = localStorage.getItem(STORAGE_KEY_STOCK);
     if (stored) {
       const savedProducts = JSON.parse(stored);
-      return [
-        ...savedProducts,
-        ...INITIAL_PRODUCTS.filter((product) =>
-          !savedProducts.some((savedProduct) => savedProduct.id === product.id)
-        )
-      ];
+      return INITIAL_PRODUCTS.map((product) => {
+        const savedProduct = savedProducts.find((saved) => saved.id === product.id);
+        return savedProduct ? { ...product, sizes: savedProduct.sizes } : product;
+      });
     }
   } catch (e) {
     console.error("Failed to load stock from storage", e);
@@ -219,9 +217,9 @@ function updateProductCardsUI() {
 
     if (stockTag) {
       if (availableSizes.length > 0) {
-        stockTag.textContent = `Sizes: ${availableSizes.join(", ")}`;
+        stockTag.textContent = `ზომები: ${availableSizes.join(", ")}`;
       } else {
-        stockTag.textContent = "Out of stock";
+        stockTag.textContent = "მარაგში არ არის";
       }
     }
 
@@ -229,23 +227,23 @@ function updateProductCardsUI() {
       stockBadge.classList.remove("in-stock", "low-stock", "out-of-stock");
       if (totalStock === 0) {
         stockBadge.classList.add("out-of-stock");
-        stockText.textContent = "Sold out";
+        stockText.textContent = "გაყიდულია";
       } else if (totalStock <= 2) {
         stockBadge.classList.add("low-stock");
-        stockText.textContent = `Only ${totalStock} left`;
+        stockText.textContent = `${totalStock} ცალი დარჩა`;
       } else {
         stockBadge.classList.add("in-stock");
-        stockText.textContent = `${totalStock} in stock`;
+        stockText.textContent = `${totalStock} ცალი მარაგშია`;
       }
     }
 
     if (orderBtn) {
       if (totalStock === 0) {
         orderBtn.disabled = true;
-        orderBtn.innerHTML = `<span>Sold Out</span><span aria-hidden="true">—</span>`;
+        orderBtn.innerHTML = `<span>გაყიდულია</span><span aria-hidden="true">—</span>`;
       } else {
         orderBtn.disabled = false;
-        orderBtn.innerHTML = `<span>Order piece</span><span class="btn-arrow" aria-hidden="true">→</span>`;
+        orderBtn.innerHTML = `<span>შეკვეთა</span><span class="btn-arrow" aria-hidden="true">→</span>`;
       }
     }
   });
@@ -276,13 +274,13 @@ function openOrderModal(productId) {
 
   const totalStock = getTotalStock(prod);
   if (totalStock === 0) {
-    modalStockLabel.textContent = "Sold out";
+    modalStockLabel.textContent = "გაყიდულია";
     modalProductStock.style.color = "#767470";
   } else if (totalStock <= 2) {
-    modalStockLabel.textContent = `Only ${totalStock} left in stock`;
+    modalStockLabel.textContent = `მარაგში დარჩენილია მხოლოდ ${totalStock} ცალი`;
     modalProductStock.style.color = "#d97706";
   } else {
-    modalStockLabel.textContent = `${totalStock} in stock`;
+    modalStockLabel.textContent = `${totalStock} ცალი მარაგშია`;
     modalProductStock.style.color = "var(--green)";
   }
 
@@ -316,7 +314,7 @@ function openOrderModal(productId) {
     selectSize(firstAvailableSize);
   } else {
     selectedSize = null;
-    sizeHint.textContent = "No sizes available";
+    sizeHint.textContent = "ზომები აღარ არის ხელმისაწვდომი";
   }
 
   updateTotals();
@@ -335,8 +333,8 @@ function selectSize(sizeName) {
   });
 
   const availableInSize = currentOrderProduct.sizes[sizeName] || 0;
-  sizeHint.textContent = `Size ${sizeName} (${availableInSize} available)`;
-  qtyLimitHint.textContent = `Max: ${availableInSize}`;
+  sizeHint.textContent = `ზომა ${sizeName} (${availableInSize} ცალი ხელმისაწვდომია)`;
+  qtyLimitHint.textContent = `მაქსიმუმ: ${availableInSize}`;
 
   if (selectedQuantity > availableInSize) {
     selectedQuantity = Math.max(1, availableInSize);
@@ -404,13 +402,13 @@ whatsappOrderBtn.addEventListener("click", () => {
 
 function processOrder(channel) {
   if (!currentOrderProduct || !selectedSize) {
-    alert("Please select an available size.");
+    alert("გთხოვთ, აირჩიოთ ხელმისაწვდომი ზომა.");
     return;
   }
 
   const availableInSize = currentOrderProduct.sizes[selectedSize] || 0;
   if (availableInSize < selectedQuantity) {
-    alert("Sorry, not enough stock left in this size.");
+    alert("სამწუხაროდ, ამ ზომის საკმარისი რაოდენობა აღარ არის მარაგში.");
     return;
   }
 
@@ -430,7 +428,7 @@ function processOrder(channel) {
   // 2. Save Order
   const newOrder = {
     id: orderRef,
-    date: new Date().toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" }),
+    date: new Date().toLocaleString("ka-GE", { dateStyle: "medium", timeStyle: "short" }),
     productName: currentOrderProduct.name,
     color: currentOrderProduct.color,
     code: currentOrderProduct.code,
@@ -445,31 +443,31 @@ function processOrder(channel) {
   saveOrders(orders);
 
   // 3. Format WhatsApp Message
-  const waText = `Hello DEA Atelier! I placed an order:\n\n` +
-    `Piece: ${currentOrderProduct.name} (${currentOrderProduct.color})\n` +
-    `Code: ${currentOrderProduct.code}\n` +
-    `Size: ${selectedSize}\n` +
-    `Quantity: ${selectedQuantity}\n` +
-    `Total: ${grandTotal} ${currentOrderProduct.currency}\n\n` +
-    `Customer Details:\n` +
-    `Name: ${name}\n` +
-    `Phone: ${phone}\n` +
-    `Delivery: ${address}\n` +
-    (notes ? `Note: ${notes}\n` : "") +
-    `Reference: ${orderRef}`;
+  const waText = `გამარჯობა, DEA Atelier! მსურს შეკვეთის გაფორმება:\n\n` +
+    `პროდუქტი: ${currentOrderProduct.name} (${currentOrderProduct.color})\n` +
+    `კოდი: ${currentOrderProduct.code}\n` +
+    `ზომა: ${selectedSize}\n` +
+    `რაოდენობა: ${selectedQuantity}\n` +
+    `ჯამი: ${grandTotal} ${currentOrderProduct.currency}\n\n` +
+    `მყიდველის ინფორმაცია:\n` +
+    `სახელი: ${name}\n` +
+    `ტელეფონი: ${phone}\n` +
+    `მიტანის მისამართი: ${address}\n` +
+    (notes ? `შენიშვნა: ${notes}\n` : "") +
+    `შეკვეთის ნომერი: ${orderRef}`;
 
   const waUrl = `https://wa.me/?text=${encodeURIComponent(waText)}`;
   successWhatsappLink.href = waUrl;
 
   // 4. Render Success Screen
-  successOrderRef.textContent = `Order Reference: ${orderRef}`;
+  successOrderRef.textContent = `შეკვეთის ნომერი: ${orderRef}`;
   successReceiptDetails.innerHTML = `
-    <div class="receipt-item"><span>Garment:</span><strong>${currentOrderProduct.name} (${currentOrderProduct.color})</strong></div>
-    <div class="receipt-item"><span>Size &amp; Qty:</span><strong>Size ${selectedSize} × ${selectedQuantity}</strong></div>
-    <div class="receipt-item"><span>Total Amount:</span><strong>${grandTotal} ${currentOrderProduct.currency} (Free Delivery)</strong></div>
-    <div class="receipt-item"><span>Customer:</span><strong>${name} (${phone})</strong></div>
-    <div class="receipt-item"><span>Delivery To:</span><strong>${address}</strong></div>
-    ${notes ? `<div class="receipt-item"><span>Note:</span><strong>${notes}</strong></div>` : ""}
+    <div class="receipt-item"><span>პროდუქტი:</span><strong>${currentOrderProduct.name} (${currentOrderProduct.color})</strong></div>
+    <div class="receipt-item"><span>ზომა და რაოდენობა:</span><strong>${selectedSize} × ${selectedQuantity}</strong></div>
+    <div class="receipt-item"><span>სრული თანხა:</span><strong>${grandTotal} ${currentOrderProduct.currency} (მიტანა უფასოა)</strong></div>
+    <div class="receipt-item"><span>მყიდველი:</span><strong>${name} (${phone})</strong></div>
+    <div class="receipt-item"><span>მიტანის მისამართი:</span><strong>${address}</strong></div>
+    ${notes ? `<div class="receipt-item"><span>შენიშვნა:</span><strong>${notes}</strong></div>` : ""}
   `;
 
   orderFormContainer.style.display = "none";
@@ -496,8 +494,8 @@ function renderOrdersHistory() {
   if (orders.length === 0) {
     ordersHistoryList.innerHTML = `
       <div class="empty-orders-state">
-        <p>No orders placed yet.</p>
-        <p style="font-size: 12px; color: var(--muted); margin-top: 6px;">Select any piece in the collection to test placing an order and live stock deductions.</p>
+        <p>შეკვეთები ჯერ არ არის.</p>
+        <p style="font-size: 12px; color: var(--muted); margin-top: 6px;">შეკვეთის გასაფორმებლად აირჩიეთ სასურველი ნივთი კოლექციიდან.</p>
       </div>
     `;
     return;
@@ -509,12 +507,12 @@ function renderOrdersHistory() {
         <strong>${o.id} · ${o.productName}</strong>
         <span class="order-history-time">${o.date}</span>
       </div>
-      <div>Color: <strong>${o.color}</strong> · Size: <strong>${o.size}</strong> · Qty: <strong>${o.quantity}</strong></div>
-      <div>Total: <strong>${o.total}</strong></div>
+      <div>ფერი: <strong>${o.color}</strong> · ზომა: <strong>${o.size}</strong> · რაოდენობა: <strong>${o.quantity}</strong></div>
+      <div>ჯამი: <strong>${o.total}</strong></div>
       <div style="margin-top: 6px; padding-top: 6px; border-top: 1px dotted var(--line);">
-        Customer: <strong>${o.customer.name}</strong> (${o.customer.phone})<br>
-        Delivery: ${o.customer.address}
-        ${o.customer.notes ? `<br>Note: <em>${o.customer.notes}</em>` : ""}
+        მყიდველი: <strong>${o.customer.name}</strong> (${o.customer.phone})<br>
+        მიტანის მისამართი: ${o.customer.address}
+        ${o.customer.notes ? `<br>შენიშვნა: <em>${o.customer.notes}</em>` : ""}
       </div>
     </div>
   `).join("");
@@ -533,16 +531,16 @@ document.querySelectorAll(".header-orders-trigger, .footer-orders-trigger, .nav-
 });
 
 resetStockBtn.addEventListener("click", () => {
-  if (confirm("Reset all garment stock levels back to default?")) {
+  if (confirm("გსურთ მარაგის საწყის მდგომარეობაზე დაბრუნება?")) {
     products = JSON.parse(JSON.stringify(INITIAL_PRODUCTS));
     saveStock(products);
     updateProductCardsUI();
-    alert("Stock replenished to original quantities!");
+    alert("მარაგი საწყის რაოდენობას დაუბრუნდა!");
   }
 });
 
 clearOrdersBtn.addEventListener("click", () => {
-  if (confirm("Clear your placed order history?")) {
+  if (confirm("გსურთ შეკვეთების ისტორიის გასუფთავება?")) {
     orders = [];
     saveOrders(orders);
     renderOrdersHistory();
@@ -569,7 +567,7 @@ window.addEventListener("keydown", (e) => {
 menuToggle.addEventListener("click", () => {
   const isOpen = menuToggle.getAttribute("aria-expanded") === "true";
   menuToggle.setAttribute("aria-expanded", String(!isOpen));
-  menuToggle.setAttribute("aria-label", isOpen ? "Open navigation" : "Close navigation");
+  menuToggle.setAttribute("aria-label", isOpen ? "მენიუს გახსნა" : "გასასვლელი");
   navigation.classList.toggle("is-open", !isOpen);
 });
 
@@ -577,7 +575,7 @@ navigation.addEventListener("click", (event) => {
   if (event.target.closest("a")) {
     navigation.classList.remove("is-open");
     menuToggle.setAttribute("aria-expanded", "false");
-    menuToggle.setAttribute("aria-label", "Open navigation");
+    menuToggle.setAttribute("aria-label", "მენიუს გახსნა");
   }
 });
 
@@ -596,7 +594,7 @@ filterButtons.forEach((button) => {
       if (isVisible) visibleCount += 1;
     });
 
-    pieceCount.textContent = `${visibleCount} ${visibleCount === 1 ? "piece" : "pieces"}`;
+    pieceCount.textContent = `${visibleCount} ნივთი`;
   });
 });
 
